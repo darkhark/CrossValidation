@@ -12,12 +12,12 @@ def openData():
 
 def adjusted_r2(r2, n, k):
     """
-    Calculated an adjusted R^2 value
+    Calculates an adjusted R^2 value
 
     :param r2: R^2 value
     :param n: Sample size
-    :param k:
-    :return:
+    :param k: Number of features
+    :return: The adjusted R^2 value
     """
     return 1 - (((1-r2)*(n-1))/(n-k-1))
 
@@ -37,29 +37,36 @@ def questionOneStep02():
     print("Training R^2: ", rSquared)
     print("Training MSE: ", mse)
     print("Training Adjusted R^2: ", adjRSquared)
-    return regModel, x_test, y_test
+    return regModel, x_test, y_test, mse
 
 
 def questionOneStep03():
-    regModel, x_test, y_test = questionOneStep02()
+    regModel, x_test, y_test, mse = questionOneStep02()
     y_pred = regModel.predict(x_test)
     score = r2_score(y_test, y_pred)
     print("Validation R^2 score: ", score)
-    return y_test, y_pred
+    return y_test, y_pred, mse
 
 
 def questionOneStep04():
-    y_test, y_pred = questionOneStep03()
+    y_test, y_pred, mse = questionOneStep03()
     ase = mean_squared_error(y_test, y_pred)
     print("Validation ASE: ", ase)
+    return ase, mse
 
 
 def questionOneStep05():
+    trainingMSE = []
+    validationASE = []
     i = 0
     while i < 5:
         print("--------------Iteration", i + 1, "-----------------")
-        questionOneStep04()
+        ase, mse = questionOneStep04()
+        trainingMSE.append(mse)
+        validationASE.append(ase)
         i += 1
+    print("Average Training MSE:", mean(trainingMSE))
+    print("Average Test ASE:", mean(validationASE))
 
 
 def questionTwoStep01And02():
@@ -99,4 +106,3 @@ print("\n--------Problem 1-------\n")
 questionOneStep05()
 print("\n------------Problem 2--------\n")
 questionTwoStep03Through06()
-
